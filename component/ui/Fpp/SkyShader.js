@@ -262,7 +262,7 @@ THREE.Sky = function () {
 
 };
 
-var Shader = function( oConfig ){
+function Shader( oConfig ){
 
   var shaderInstance = this;
   // Add Sky Mesh

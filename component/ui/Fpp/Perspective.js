@@ -59,9 +59,6 @@ function initView(perspective) {
         || window.innerWidth;
     perspective.display.height = perspective.display.height || perspective.view.dataset.height
         || window.innerHeight;
-    window.addEventListener( 'resize', function(){
-        perspective.renderer.updateResolution( window.innerWidth, window.innerHeight );
-    }, false );
     return perspective;
 }
 
@@ -81,6 +78,9 @@ function renderScene(perspective) {
             perspective.keyboardControls.dispatch();
         }
     });
+    window.addEventListener('resize', function(){
+        perspective.renderer.updateResolution( window.innerWidth, window.innerHeight );
+    }, false);
     perspective.renderer.start();
 }
 
