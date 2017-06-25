@@ -11,11 +11,6 @@
 
 <script>
     (function(window, document, undefined) {
-
-      var FirstPersonPerspectiveController = require('./frontend/view/matrix/FirstPersonPerspectiveController.js');
-      var WebComponentFactory = require('./frontend/view/WebComponentFactory.js');
-
-      window.FirstPersonPerspective = WebComponentFactory.getConstructor( 'matrix-firstperson-perspective', FirstPersonPerspectiveController );
-
+        require("websemble").frontend.createComponent('ui-fpp');
     })(window, document);
 </script>

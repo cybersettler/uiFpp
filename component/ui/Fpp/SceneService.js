@@ -1,5 +1,5 @@
 const THREE = require("three");
-const Shader = require("../../util/SkyShader.js");
+const Shader = require("./SkyShader.js");
 
 function initSky( scene, shaderConfig ){
     shader = new Shader( shaderConfig );
