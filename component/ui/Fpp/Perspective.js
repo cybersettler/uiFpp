@@ -62,6 +62,7 @@ function initView(perspective) {
     window.addEventListener( 'resize', function(){
         perspective.renderer.updateResolution( window.innerWidth, window.innerHeight );
     }, false );
+    return perspective;
 }
 
 function renderScene(perspective) {

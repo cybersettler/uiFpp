@@ -20,6 +20,7 @@ module.exports = {
 
         var camera = new THREE.PerspectiveCamera( 75, aspect, 0.01, 2000000 );
         perspective.pitchObject.add( camera );
+        perspective.scene.add(perspective.yawObject);
         return perspective;
     }
 };

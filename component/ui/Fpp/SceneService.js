@@ -18,8 +18,6 @@ module.exports = {
         perspective.clock = new THREE.Clock(false);
         perspective.delta = 0;
 
-        scene.add(perspective.yawObject);
-
         var geometry = new THREE.BoxGeometry(200, 200, 200);
         var material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
 
