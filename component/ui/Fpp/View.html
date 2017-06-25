@@ -1,0 +1,21 @@
+<template>
+  <style>
+    #scene { padding:0;margin:0; }
+    #scene, #scene canvas { width: 100%; height: 100% }
+  </style>
+  <div id="scene"></div>
+  <matrix-mouse-controls>
+    <content></content>
+  </matrix-mouse-controls>
+</template>
+
+<script>
+    (function(window, document, undefined) {
+
+      var FirstPersonPerspectiveController = require('./frontend/view/matrix/FirstPersonPerspectiveController.js');
+      var WebComponentFactory = require('./frontend/view/WebComponentFactory.js');
+
+      window.FirstPersonPerspective = WebComponentFactory.getConstructor( 'matrix-firstperson-perspective', FirstPersonPerspectiveController );
+
+    })(window, document);
+</script>
