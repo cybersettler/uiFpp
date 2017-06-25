@@ -11,7 +11,7 @@ module.exports = {
         perspective.pitchObject = new THREE.Object3D();
         perspective.yawObject = new THREE.Object3D();
         perspective.yawObject.position.set( position[0], position[1], position[2] + 1.6 );
-        perspective.yawObject.add( this.pitchObject );
+        perspective.yawObject.add(perspective.pitchObject);
         perspective.focus = new THREE.Raycaster(perspective.yawObject.position.clone(),
             new THREE.Vector3( 0, -1, 0 ), 0, perspective.focusDistance );
         perspective.cursor;
@@ -21,6 +21,7 @@ module.exports = {
         var camera = new THREE.PerspectiveCamera( 75, aspect, 0.01, 2000000 );
         perspective.pitchObject.add( camera );
         perspective.scene.add(perspective.yawObject);
+        perspective.camera = camera;
         return perspective;
     }
 };
