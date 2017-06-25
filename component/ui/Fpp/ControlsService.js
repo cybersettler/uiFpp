@@ -9,18 +9,18 @@ module.exports = {
             mouseControls.dataset.lockpointer = false;
         });
         perspective.keyboardControls = keyboardControls;
-        var parentView = perspective.scope.getParentView();
+        perspective.scope.getParentView().then(function(parentView) {
+            if(mouseControls && closeUiBtn){
+                closeUiBtn.onclick = function( e ){
+                    e.preventDefault();
+                    mouseControls.dataset.lockpointer = true;
+                    parentView.addEventListener('keydown', keyboardControls.registerKeyEvent, false);
+                    parentView.addEventListener('keyup', keyboardControls.registerKeyEvent, false);
+                };
+            }
 
-        if(mouseControls && closeUiBtn){
-            closeUiBtn.onclick = function( e ){
-                e.preventDefault();
-                mouseControls.dataset.lockpointer = true;
-                parentView.addEventListener('keydown', keyboardControls.registerKeyEvent, false);
-                parentView.addEventListener('keyup', keyboardControls.registerKeyEvent, false);
-            };
-        }
-
-        parentView.addEventListener("mouseMove", rotatePerspective);
+            parentView.addEventListener("mouseMove", rotatePerspective);
+        });
 
         function rotatePerspective( e ){
             var args = e.detail;
