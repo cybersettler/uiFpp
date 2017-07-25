@@ -39,8 +39,6 @@ function generateDefaultScene( ){
 
 module.exports = {
     generateDefaultScene: generateDefaultScene,
-    generateDefaultFloor: generateDefaultFloor,
     generateDefaultGround: generateDefaultGround,
-    generateDefaultSky: generateDefaultSky,
     generateGrid: generateGrid
 };
