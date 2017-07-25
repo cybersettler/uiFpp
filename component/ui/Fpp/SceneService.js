@@ -1,5 +1,7 @@
 const THREE = require("three");
 const Shader = require("./SkyShader.js");
+const ObjectService = require('./ObjectService.js');
+const DefaultSceneService = require('./DefaultSceneService.js');
 
 function initSky( scene, shaderConfig ){
     var shader = new Shader(shaderConfig);
@@ -19,31 +21,64 @@ function hasShader(perspective) {
         perspective.sceneData.environment.sky.shader;
 }
 
+function generateComponentMap(components){
+    var result = {};
+    components.forEach(function(item) {
+        result[item.name] = item;
+    });
+    return result;
+}
+
+function generateScene(sceneData, oComponents, oBodies){
+
+    var site = {
+        obstacles: [],
+        bodies: oBodies,
+        components: oComponents,
+        userDefaultPosition: sceneData.userDefaultPosition
+    };
+
+    site.scene = DefaultSceneService.generateDefaultScene();
+    var grid = DefaultSceneService.generateGrid();
+    var ground = DefaultSceneService.generateDefaultFloor();
+    site.scene.add(grid);
+    site.scene.add(ground);
+    site.obstacles.push(ground);
+    sceneData.content.forEach(addContent, site);
+    return site;
+}
+
+function addContent(item) {
+    var config = {
+        site: this,
+        component: this.components[item.component]
+    };
+    item.instances.forEach(addInstance, config);
+}
+
+function addInstance(item) {
+    var body = this.site.bodies[this.component.body].clone();
+    if (item.uuid) {
+        body.uuid = item.uuid;
+    }
+    body.position.set(item.position[0], item.position[1], item.position[2]);
+    body.rotation.set(item.rotation[0], item.rotation[1], item.rotation[2]);
+    this.site.scene.add(body);
+    if(this.component.componentType === 'buildingBlock') {
+        this.site.obstacles.push(body);
+    }
+}
+
 module.exports = {
     initScene: function(perspective) {
-        var scene = new THREE.Scene();
         perspective.clock = new THREE.Clock(false);
         perspective.delta = 0;
-
-        var geometry = new THREE.BoxGeometry(200, 200, 200);
-        var material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
-
-        var mesh = new THREE.Mesh(geometry, material);
-
-        scene.add(mesh);
-        var shaderConfig =  hasShader(perspective) ?
-            perspective.sceneData.environment.sky.shader : {
-                turbidity: 10,
-                reileigh: 2,
-                mieCoefficient: 0.005,
-                mieDirectionalG: 0.8,
-                luminance: 1,
-                inclination: 0.49, // elevation / inclination
-                azimuth: 0.25, // Facing front,
-                sun: false
-            };
-        perspective.shader = initSky(scene, shaderConfig);
-        perspective.scene = scene;
-        return perspective;
+        return ObjectService.loadObjects(perspective.sceneData)
+            .then(function(bodies) {
+                var componentMap = generateComponentMap(perspective.sceneData.components);
+                perspective.site = generateScene(perspective.sceneData,
+                    componentMap, bodies);
+                return perspective;
+            });
     }
 };

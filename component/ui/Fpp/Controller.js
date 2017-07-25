@@ -1,4 +1,5 @@
 const Perspective = require( "./Perspective.js" );
+const {session} = require('electron');
 
 function FirstPersonPerspectiveController(view, scope){
   this.super(view, scope);
@@ -22,11 +23,11 @@ function FirstPersonPerspectiveController(view, scope){
       scope.bindAttributes(bindingAttributes);
 
       controller.perspective = new Perspective(view, scope);
-      controller.perspective.render();
+      controller.perspective.initialize();
   });
 
   scope.onDetached.then(function(){
-    controller.perspective.renderer.stop();
+    controller.perspective.finalize();
   });
 }
 
