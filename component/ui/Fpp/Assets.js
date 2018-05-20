@@ -45,15 +45,15 @@ function addMaterial(item) {
 
 function addGeometry(item) {
     if (item.type === "BoxGeometry") {
-        translateGeometryDimentsions(item);
+        translateGeometryDimensions(item);
     }
     item.uuid = THREE.Math.generateUUID();
     this.map.geometries[item.name ] = item.uuid;
     this.geometries.push(item);
 }
 
-function translateGeometryDimentsions(geometry) {
-    if(DefaultDirections.UP.y == 0 && DefaultDirections.NORTH.z == 0){
+function translateGeometryDimensions(geometry) {
+    if(DefaultDirections.UP.y === 0 && DefaultDirections.NORTH.z === 0){
         var height = geometry.depth;
         var depth = geometry.height;
         geometry.height = height;
