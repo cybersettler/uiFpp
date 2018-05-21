@@ -1,29 +1,31 @@
-const THREE = require("three");
-const DefaultDirections = require('./DefaultDirections.js');
+import {Math as ThreeMath} from '/node_modules/three/src/Three.js';
+import DefaultDirections from './DefaultDirections.js';
 
-function Assets(sceneData) {
-    this.baseUrl = sceneData.baseURL;
-    this.images = [];
-    this.textures= [];
-    this.materials = [];
-    this.geometries = [];
+class Assets {
+    constructor(sceneData) {
+      this.baseUrl = sceneData.baseURL;
+      this.images = [];
+      this.textures= [];
+      this.materials = [];
+      this.geometries = [];
 
-    this.map = {
+      this.map = {
         textures: {},
         materials: {},
         geometries: {}
-    };
+      };
 
-    sceneData.textures.forEach(addTexture, this);
-    sceneData.materials.forEach(addMaterial, this);
-    sceneData.geometries.forEach(addGeometry, this);
+      sceneData.textures.forEach(addTexture, this);
+      sceneData.materials.forEach(addMaterial, this);
+      sceneData.geometries.forEach(addGeometry, this);
+    }
 }
 
 function addTexture(item) {
-    item.uuid = THREE.Math.generateUUID();
+    item.uuid = ThreeMath.generateUUID();
     if (item.imageURL) {
         let image = {
-            uuid: THREE.Math.generateUUID(),
+            uuid: ThreeMath.generateUUID(),
             url: this.baseUrl + item.imageURL
         };
         this.images.push(image);
@@ -35,7 +37,7 @@ function addTexture(item) {
 }
 
 function addMaterial(item) {
-    item.uuid = THREE.Math.generateUUID();
+    item.uuid = ThreeMath.generateUUID();
     if (item.texture) {
         item.map = this.map.textures[item.texture];
     }
@@ -47,18 +49,18 @@ function addGeometry(item) {
     if (item.type === "BoxGeometry") {
         translateGeometryDimensions(item);
     }
-    item.uuid = THREE.Math.generateUUID();
+    item.uuid = ThreeMath.generateUUID();
     this.map.geometries[item.name ] = item.uuid;
     this.geometries.push(item);
 }
 
 function translateGeometryDimensions(geometry) {
     if(DefaultDirections.UP.y === 0 && DefaultDirections.NORTH.z === 0){
-        var height = geometry.depth;
-        var depth = geometry.height;
+        let height = geometry.depth;
+        let depth = geometry.height;
         geometry.height = height;
         geometry.depth = depth;
     }
 }
 
-module.exports = Assets;
+export default Assets;

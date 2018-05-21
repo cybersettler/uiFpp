@@ -14,7 +14,7 @@
  * Three.js integration by zz85 http://twitter.com/blurspline
 */
 
-const THREE = require("three");
+import * as THREE from '/node_modules/three/src/Three.js';
 
 THREE.ShaderLib[ 'sky' ] = {
 
@@ -335,4 +335,4 @@ function Shader( oConfig ){
 				}
 }
 
-module.exports = Shader;
+export default Shader;

@@ -1,92 +1,100 @@
-const ControlsService = require('./ControlsService.js');
-const CameraService = require('./CameraService.js');
-const SceneService = require('./SceneService.js');
-const WebGLrenderer = require("./WebGLrenderer.js");
+import ControlsService from './ControlsService.js';
+import CameraService from './CameraService.js';
+import SceneService from './SceneService.js';
+import WebGlRenderer from './WebGlRenderer.js';
 
-function Perspective(view, scope){  // (oConfig)
-  this.view = view;
-  this.scope = scope;
-  this.display = {};
+class Perspective {
 
-  ControlsService.initControls(this);
-}
+  constructor(view, scope) {
+    this.view = view;
+    this.scope = scope;
+    this.display = {};
 
+    ControlsService.initControls(this);
+  }
 
-Perspective.prototype.initialize = function() {
-  this.fetchData()
-      .then(initView)
-      .then(SceneService.initScene)
-      .then(CameraService.initCamera)
-      .then(renderScene);
-};
+  initialize() {
+    this.fetchData().
+        then(initView).
+        then(SceneService.initScene).
+        then(CameraService.initCamera).
+        then(renderScene);
+  };
 
-Perspective.prototype.finalize = function() {
+  finalize() {
     this.renderer.stop();
-};
+  };
 
-Perspective.prototype.fetchData = function() {
-    var promises = [];
-    var perspective = this;
+  fetchData() {
+    let promises = [];
+    let perspective = this;
 
     if (this.view.hasAttribute('data-scene')) {
-        promises.push(
-            this.scope.getScene().then(function(result) {
-                perspective.sceneData = result;
-            })
-        );
+      promises.push(
+          this.scope.getScene().then(function(result) {
+            perspective.sceneData = result;
+          }),
+      );
     }
 
     if (this.view.hasAttribute('data-subject')) {
-        promises.push(
-            this.scope.getSubject().then(function(result) {
-                perspective.subjectData = result;
-            })
-        );
+      promises.push(
+          this.scope.getSubject().then(function(result) {
+            perspective.subjectData = result;
+          }),
+      );
     }
 
     if (this.view.hasAttribute('data-display')) {
-        promises.push(
-            this.scope.getContext().then(function(result) {
-                perspective.display = result;
-            })
-        );
+      promises.push(
+          this.scope.getContext().then(function(result) {
+            perspective.display = result;
+          }),
+      );
     }
 
     return Promise.all(promises).then(function() {
-        return perspective;
+      return perspective;
     });
-};
+  };
+
+}
 
 function initView(perspective) {
-    perspective.display.parentElement = perspective.view.shadowRoot.querySelector('#scene');
-    perspective.display.pixelRatio = perspective.display.pixelRatio || window.devicePixelRatio;
-    perspective.display.width =  perspective.display.width || perspective.view.dataset.width
-        || window.innerWidth;
-    perspective.display.height = perspective.display.height || perspective.view.dataset.height
-        || window.innerHeight;
-    return perspective;
+  perspective.display.parentElement = perspective.view.shadowRoot.querySelector(
+      '#scene');
+  perspective.display.pixelRatio = perspective.display.pixelRatio ||
+      window.devicePixelRatio;
+  perspective.display.width = perspective.display.width ||
+      perspective.view.dataset.width
+      || window.innerWidth;
+  perspective.display.height = perspective.display.height ||
+      perspective.view.dataset.height
+      || window.innerHeight;
+  return perspective;
 }
 
 function renderScene(perspective) {
-    perspective.renderer = new WebGLrenderer({
-        scene:  perspective.site.scene,
-        camera: perspective.camera,
-        width:  perspective.display.width,
-        height: perspective.display.height,
-        parentElement: perspective.display.parentElement,
-        pixelRatio: perspective.display.pixelRatio,
-        onBeforeRender: function() {
-       /*     var shaderData = perspective.sceneData.environment.sky.shader;
-            shaderData.inclination += 0.001;
-            perspective.shader.update(shaderData); */
-            perspective.delta = perspective.clock.getDelta();
-            perspective.keyboardControls.dispatch();
-        }
-    });
-    window.addEventListener('resize', function(){
-        perspective.renderer.updateResolution( window.innerWidth, window.innerHeight );
-    }, false);
-    perspective.renderer.start();
+  perspective.renderer = new WebGlRenderer({
+    scene: perspective.site.scene,
+    camera: perspective.camera,
+    width: perspective.display.width,
+    height: perspective.display.height,
+    parentElement: perspective.display.parentElement,
+    pixelRatio: perspective.display.pixelRatio,
+    onBeforeRender: function() {
+      /*     var shaderData = perspective.sceneData.environment.sky.shader;
+           shaderData.inclination += 0.001;
+           perspective.shader.update(shaderData); */
+      perspective.delta = perspective.clock.getDelta();
+      perspective.keyboardControls.dispatch();
+    },
+  });
+  window.addEventListener('resize', function() {
+    perspective.renderer.updateResolution(window.innerWidth,
+        window.innerHeight);
+  }, false);
+  perspective.renderer.start();
 }
 
-module.exports = Perspective;
+export default Perspective;

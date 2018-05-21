@@ -1,4 +1,4 @@
-module.exports = {
+const KeyCodeMap = {
   "backspace":    8,
   "tab":          9,
   "enter":        13,
@@ -102,3 +102,5 @@ open bracket	219
 back slash	220
 close braket	221
 single quote	222 */
+
+export default KeyCodeMap;

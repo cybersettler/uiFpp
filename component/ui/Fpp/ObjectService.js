@@ -1,10 +1,10 @@
-const THREE = require("three");
-const Assets = require('./Assets.js');
+import {ObjectLoader, JSONLoader} from '/node_modules/three/src/Three.js';
+import Assets from './Assets.js';
 
 function addMesh(item) {
-    var objectLoader = this.objectLoader;
-    var assets = this.assets;
-    var meshMap = this.meshMap;
+    let objectLoader = this.objectLoader;
+    let assets = this.assets;
+    let meshMap = this.meshMap;
 
     item.geometry = this.assets.map.geometries[item.geometryName];
     item.material = this.assets.map.materials[item.materialName];
@@ -14,7 +14,7 @@ function addMesh(item) {
     if(item.modelURL){
         return new Promise( function( resolve ){
             jsonLoader.load(item.modelURL, function(geometry, materials) {
-                var mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial(materials) );
+                let mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial(materials) );
                 mesh.name = data.name;
                 resolve( mesh );
             });
@@ -22,7 +22,7 @@ function addMesh(item) {
     }
     */
 
-    var result = new Promise(function(fulfill) {
+    let result = new Promise(function(fulfill) {
         let data = {
             object: item,
             geometries: assets.geometries,
@@ -39,12 +39,12 @@ function addMesh(item) {
 
 
 
-module.exports = {
+const ObjectService = {
     loadObjects: function(sceneData) {
-        var config =  {
+        let config =  {
             assets: new Assets(sceneData),
-            objectLoader: new THREE.ObjectLoader(),
-            jsonLoader: new THREE.JSONLoader(),
+            objectLoader: new ObjectLoader(),
+            jsonLoader: new JSONLoader(),
             meshMap: {}
         };
         return Promise.all(sceneData.bodies.map(addMesh, config))
@@ -53,3 +53,5 @@ module.exports = {
             });
     }
 };
+
+export default ObjectService;

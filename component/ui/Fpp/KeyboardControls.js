@@ -1,54 +1,46 @@
-const keyCodeMap = require("./KeyCodeMap.js");
+import keyCodeMap from './KeyCodeMap.js';
 
-function KeyboardControls(){
+class KeyboardControls {
 
-  var controls = this;
-  this.upEvents = [];
-  this.downEvents = [];
+  constructor() {
+    this.upEvents = [];
+    this.downEvents = [];
 
-  this.upHandlers = [];
-  this.downHandlers = [];
+    this.upHandlers = [];
+    this.downHandlers = [];
+    // this.isEnabled = false;
+  }
 
-  // this.isEnabled = false;
+  registerKeyEvent(e) {
+    this.upEvents[Number(e.keyCode)] = e.type === 'keyup';
+    this.downEvents[Number(e.keyCode)] = e.type === 'keydown';
+  }
 
-  this.registerKeyEvent = function( e ){
-
-    controls.upEvents[ Number(e.keyCode) ] = e.type === 'keyup';
-    controls.downEvents[ Number(e.keyCode) ] = e.type === 'keydown';
-
-  };
-
-  this.dispatch = function(){
-
-    this.downEvents.forEach( function( triggered, key ){
-      if( triggered && controls.downHandlers[ key ]){
-        controls.downHandlers[ key ]( key );
+  dispatch() {
+    let controls = this;
+    this.downEvents.forEach(function(triggered, key) {
+      if (triggered && controls.downHandlers[key]) {
+        controls.downHandlers[key](key);
       }
     });
 
-    this.upEvents.forEach( function( triggered, key ){
-      if( triggered && controls.upHandlers[ key ] ){
-        controls.upHandlers[ key ]( key );
+    this.upEvents.forEach(function(triggered, key) {
+      if (triggered && controls.upHandlers[key]) {
+        controls.upHandlers[key](key);
       }
     });
 
     this.downEvents.length = 0;
     this.upEvents.length = 0;
+  }
 
-  };
+  addUpEventHandler(key, handler) {
+    this.upHandlers[keyCodeMap[key]] = handler;
+  }
 
-  this.addUpEventHandler = function( key, handler ){
-
-    this.upHandlers[ keyCodeMap[ key ] ] = handler;
-
-  };
-
-  this.addDownEventHandler = function( key, handler ){
-
-    this.downHandlers[ keyCodeMap[ key ] ] = handler;
-
-  };
-
+  addDownEventHandler(key, handler) {
+    this.downHandlers[keyCodeMap[key]] = handler;
+  }
 }
 
-module.exports = KeyboardControls;
+export default KeyboardControls;

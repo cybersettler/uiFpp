@@ -5,4 +5,4 @@ function Scene(sceneData, components, bodies) {
         this.userDefaultPosition = sceneData.userDefaultPosition;
 }
 
-module.exports = Scene;
+export default Scene;
